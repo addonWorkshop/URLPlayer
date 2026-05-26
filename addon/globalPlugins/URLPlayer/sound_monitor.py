@@ -28,7 +28,7 @@ class SoundMonitor:
     def __init__(self, callback, monitor_type=0, min_peak=1):
         self.callback = callback
         self.monitor_type = monitor_type
-        self.min_peak = min_peak/1000000
+        self.min_peak = min_peak
         self.active_processes = {}
         self.registered_sessions = {}
         self.stop_event = threading.Event()
@@ -93,7 +93,7 @@ class SoundMonitor:
                         process_info = (session.Process.pid, session.Process.name())
                     except Exception:
                         continue
-                    peak = session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()
+                    peak = round(session._ctl.QueryInterface(IAudioMeterInformation).GetPeakValue()*1000000)
                     previously_detected_peak = process_peaks.get(process_info, 0)
                     peak = max(previously_detected_peak, peak)
                     process_peaks[process_info] = peak
